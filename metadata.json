@@ -1,0 +1,8 @@
+{
+  "name": "Velvet Bloom",
+  "description": "Luxurious Jamshedpur Ladies Parlour",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
