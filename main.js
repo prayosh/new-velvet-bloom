@@ -114,6 +114,11 @@ function initPageTransitions() {
   
   if (!pageWrapper) return;
 
+  // Handle browser back-forward cache (bfcache) restores
+  window.addEventListener('pageshow', (event) => {
+    pageWrapper.classList.remove('fade-out');
+  });
+
   links.forEach(link => {
     link.addEventListener('click', (e) => {
       const destination = link.getAttribute('href');

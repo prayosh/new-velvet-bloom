@@ -4,7 +4,7 @@
   "description": "Luxurious Ladies Parlour Jamshedpur",
   "scripts": {
     "dev": "http-server . -p 3000 -a 0.0.0.0",
-    "build": "mkdir -p dist && cp -r *.html *.css *.js dist/ && mkdir -p dist/images && cp -r images/. dist/images/",
+    "build": "mkdir -p dist && cp -r *.html *.css *.js images dist/",
     "lint": "echo 'No lint issues found'"
   },
   "keywords": [],
