@@ -114,9 +114,28 @@ function initPageTransitions() {
   
   if (!pageWrapper) return;
 
-  // Handle browser back-forward cache (bfcache) restores
-  window.addEventListener('pageshow', (event) => {
+  const clearFadeOut = () => {
     pageWrapper.classList.remove('fade-out');
+  };
+
+  // 1. Clear fade-out immediately on DOM ready in case of stale state
+  clearFadeOut();
+
+  // 2. Handle browser back-forward cache (bfcache) restores
+  window.addEventListener('pageshow', (event) => {
+    clearFadeOut();
+  });
+
+  // 3. Clear on pagehide so cached pages are stored clean without the class
+  window.addEventListener('pagehide', () => {
+    clearFadeOut();
+  });
+
+  // 4. Clear on visibility changes (like tab switching, resuming, or multitasking panels)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      clearFadeOut();
+    }
   });
 
   links.forEach(link => {
@@ -130,6 +149,10 @@ function initPageTransitions() {
       
       setTimeout(() => {
         window.location.href = destination;
+        
+        // After starting the navigation, schedule a quick fallback to remove 'fade-out'
+        // so that if the navigation is cached or cancelled, the page isn't permanently blank
+        setTimeout(clearFadeOut, 100);
       }, 450); // Timeout matching CSS fade speed
     });
   });
