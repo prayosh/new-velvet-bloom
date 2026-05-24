@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Luxurious Ladies Parlour Jamshedpur",
   "scripts": {
-    "dev": "http-server . -p 3000 -a 0.0.0.0",
+    "dev": "http-server . -p 3000 -a 0.0.0.0 --ext html",
     "build": "mkdir -p dist && cp -r *.html *.css *.js images dist/",
     "lint": "echo 'No lint issues found'"
   },

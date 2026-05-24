@@ -87,16 +87,29 @@ function initMobileDrawer() {
 
 /**
  * 3. Nav active tab resolver
- * Matches path to highlight active list items in navigation
+ * Matches path to highlight active list items in navigation with robust clean URL support
  */
 function highlightActiveLink() {
   const currentPath = window.location.pathname;
-  const pageName = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
+  
+  // Normalize current path by stripping trailing/leading slashes, index prefixes, and .html extension
+  let normCurrent = currentPath.split('?')[0].replace(/\.html$/, '').replace(/^\//, '').replace(/\/$/, '');
+  if (normCurrent === '' || normCurrent === 'index') {
+    normCurrent = 'home';
+  }
   
   const navLinks = document.querySelectorAll('.nav-links a, .mobile-drawer ul a');
   navLinks.forEach(link => {
     const linkHref = link.getAttribute('href');
-    if (linkHref === pageName) {
+    if (!linkHref) return;
+
+    // Normalize link destination
+    let normHref = linkHref.split('?')[0].replace(/\.html$/, '').replace(/^\//, '').replace(/\/$/, '');
+    if (normHref === '' || normHref === 'index') {
+      normHref = 'home';
+    }
+    
+    if (normCurrent === normHref) {
       link.classList.add('active');
     } else {
       link.classList.remove('active');
@@ -109,7 +122,7 @@ function highlightActiveLink() {
  * Plays fadeout, delays loading page link, and fades in gracefully
  */
 function initPageTransitions() {
-  const links = document.querySelectorAll('a:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"])');
+  const links = document.querySelectorAll('a:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"]):not([href^="mailto:"]):not([href^="tel:"])');
   const pageWrapper = document.querySelector('.page-wrapper');
   
   if (!pageWrapper) return;
@@ -142,7 +155,13 @@ function initPageTransitions() {
     link.addEventListener('click', (e) => {
       const destination = link.getAttribute('href');
       // If destination is empty or just standard hashes, skip
-      if (!destination || destination === '#') return;
+      if (!destination || destination === '#' || destination.startsWith('javascript:')) return;
+
+      // Skip external links transition
+      if (destination.startsWith('http://') || destination.startsWith('https://')) {
+        const url = new URL(destination, window.location.href);
+        if (url.origin !== window.location.origin) return;
+      }
 
       e.preventDefault();
       pageWrapper.classList.add('fade-out');
