@@ -91,12 +91,23 @@ function initMobileDrawer() {
  */
 function highlightActiveLink() {
   const currentPath = window.location.pathname;
-  const pageName = currentPath.substring(currentPath.lastIndexOf('/') + 1) || 'index.html';
+  let pageKey = currentPath.substring(currentPath.lastIndexOf('/') + 1);
+  pageKey = pageKey.replace('.html', '');
+  if (pageKey === '') {
+    pageKey = 'index';
+  }
   
   const navLinks = document.querySelectorAll('.nav-links a, .mobile-drawer ul a');
   navLinks.forEach(link => {
-    const linkHref = link.getAttribute('href');
-    if (linkHref === pageName) {
+    let linkHref = link.getAttribute('href') || '';
+    linkHref = linkHref.split('?')[0]; // strip query parameters
+    let linkKey = linkHref.substring(linkHref.lastIndexOf('/') + 1);
+    linkKey = linkKey.replace('.html', '');
+    if (linkKey === '') {
+      linkKey = 'index';
+    }
+    
+    if (linkKey === pageKey) {
       link.classList.add('active');
     } else {
       link.classList.remove('active');
